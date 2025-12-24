@@ -1,8 +1,12 @@
 
 
 # Soggfy-Fixed
-This is my fork of Soggfy that separates contributing artists via a comma instead of anything else.
+This is a fork of fork of Soggfy that separates contributing artists via a comma instead of anything else.
 Additionally, this repo contains a few changes to be able to be built on GitHub Actions.
+
+What this fork of that fork does differently is that I fixed the lyrics. For some reason, it doesn't get the lyrics, so I looked into the [spicy lyrics](https://github.com/Spikerko/spicy-lyrics) source code and modified Soggfy to use the same method as spicy lyrics for getting the lyrics.
+
+(gonna make the commit soon if I don't get lazy and I actually finish it)
 
 # Why?
 When saving a song with multiple Artists, Soggfy would divide them differently based on what you were using.
