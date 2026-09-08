@@ -17,12 +17,12 @@ jobs:
         node-version: 18
         cache: 'npm'
         cache-dependency-path: Sprinkles/package-lock.json
+
     - name: Install VC++ ATL component
-  shell: cmd
-  run: |
-    for /f "usebackq tokens=*" %%i in (`"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath`) do set VS_PATH=%%i
-    echo Installing ATL into %VS_PATH%
-    "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" modify --installPath "%VS_PATH%" --add Microsoft.VisualStudio.Component.VC.ATL --quiet --norestart
+      shell: pwsh
+      run: |
+        $vsPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
+        & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" modify --installPath $vsPath --add Microsoft.VisualStudio.Component.VC.ATL --quiet --norestart
 
     - name: Fetch external dependencies
       run: ./fetch_external_deps.bat
@@ -38,7 +38,6 @@ jobs:
         cd Sprinkles/
         $Env:NODE_ENV = "production"
         $Env:VERSION_INFO = $Env:GITHUB_REF_NAME + "-" + $Env:GITHUB_SHA.Substring(0, 8);
-
         npm install
         npm run build
         cd ../
@@ -54,7 +53,7 @@ jobs:
         
         Copy-Item ./Sprinkles/dist/*.* ./build/Release/
         7z a "-xr!*.lib" "-xr!*.exp" "-xr!*.pdb" build/Soggfy-$ver.zip ./build/Release/ ./Scripts/*
-
+        
     - name: Upload Binaries
       uses: softprops/action-gh-release@v1
       if: ${{ github.ref_type == 'tag' }}
