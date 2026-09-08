@@ -10,13 +10,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: microsoft/setup-msbuild@v2
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v5
       with:
         node-version: 18
         cache: 'npm'
         cache-dependency-path: Sprinkles/package-lock.json
+    - name: Install VC++ ATL component
+  shell: cmd
+  run: |
+    for /f "usebackq tokens=*" %%i in (`"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath`) do set VS_PATH=%%i
+    echo Installing ATL into %VS_PATH%
+    "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" modify --installPath "%VS_PATH%" --add Microsoft.VisualStudio.Component.VC.ATL --quiet --norestart
 
     - name: Fetch external dependencies
       run: ./fetch_external_deps.bat
