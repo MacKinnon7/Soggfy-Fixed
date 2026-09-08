@@ -18,11 +18,12 @@ jobs:
         cache: 'npm'
         cache-dependency-path: Sprinkles/package-lock.json
 
-    - name: Install VC++ ATL component
+    - name: Install VC++ ATL (required for atlbase.h)
       shell: pwsh
       run: |
         $vsPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
-        & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" modify --installPath $vsPath --add Microsoft.VisualStudio.Component.VC.ATL --quiet --norestart
+        Write-Host "Visual Studio path: $vsPath"
+        & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" modify --installPath $vsPath --add Microsoft.VisualStudio.Component.VC.ATL --quiet --norestart --wait
 
     - name: Fetch external dependencies
       run: ./fetch_external_deps.bat
@@ -53,7 +54,6 @@ jobs:
         
         Copy-Item ./Sprinkles/dist/*.* ./build/Release/
         7z a "-xr!*.lib" "-xr!*.exp" "-xr!*.pdb" build/Soggfy-$ver.zip ./build/Release/ ./Scripts/*
-        
     - name: Upload Binaries
       uses: softprops/action-gh-release@v1
       if: ${{ github.ref_type == 'tag' }}
